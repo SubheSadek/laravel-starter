@@ -34,6 +34,8 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
+            \Sentry\captureException($e);
+
             return withError('Registration failed!');
         }
 
@@ -65,6 +67,7 @@ class AuthController extends Controller
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
+            \Sentry\captureException($e);
 
             return withError('Verification failed!');
         }

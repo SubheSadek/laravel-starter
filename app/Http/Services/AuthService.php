@@ -77,7 +77,7 @@ class AuthService
     public function findValidatedUser(VerifyUserRequest $request): User
     {
         $user = User::where('email', $request->email)->first();
-        
+
         if (
             empty($user)
             || $user->status !== UserStatus::PENDING->value
