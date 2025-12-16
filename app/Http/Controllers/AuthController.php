@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Enums\UserStatus;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\VerifyUserRequest;
@@ -57,7 +58,7 @@ class AuthController extends Controller
 
         try {
             DB::beginTransaction();
-            $user->status = 'active';
+            $user->status = UserStatus::ACTIVE;
             $user->save();
 
             $userOtp->delete();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Services;
 
+use App\Http\Enums\UserStatus;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\VerifyUserRequest;
 use App\Mail\UserOtpMail;
@@ -23,7 +24,7 @@ class AuthService
             $validatedData['address'] = trim(strip_tags($address));
         }
 
-        $validatedData['status'] = 'pending';
+        $validatedData['status'] = UserStatus::PENDING;
 
         return $validatedData;
     }
@@ -76,10 +77,10 @@ class AuthService
     public function findValidatedUser(VerifyUserRequest $request): User
     {
         $user = User::where('email', $request->email)->first();
-
+        
         if (
             empty($user)
-            || $user->status !== 'pending'
+            || $user->status !== UserStatus::PENDING->value
             || ! Hash::check($request->password, $user->password)
         ) {
             abort(404, 'Invalid user credentials!');
@@ -115,7 +116,7 @@ class AuthService
 
         if (
             empty($user)
-            || $user->status !== 'active'
+            || $user->status !== UserStatus::ACTIVE->value
             || ! Hash::check($request->password, $user->password)
         ) {
             abort(404, 'Invalid user credentials!');
