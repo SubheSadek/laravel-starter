@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->as('auth.')
@@ -13,4 +14,15 @@ Route::prefix('auth')->as('auth.')
         $route->post('login', 'login')->name('login')->middleware(['guest', 'throttle:8,1']);
         $route->get('auth-user', 'authUser')->name('auth-user')->middleware('auth:sanctum');
         $route->post('logout', 'logout')->name('logout')->middleware('auth:sanctum');
+    });
+
+Route::prefix('company')->as('company.')
+    ->controller(CompanyController::class)
+    ->middleware('auth:sanctum')
+    ->group(function ($route) {
+        $route->get('company-list', 'companyList')->name('company-list');
+        $route->post('create-company', 'createCompany')->name('create-company');
+        $route->get('company-details/{id}', 'companyDetails')->name('company-details');
+        $route->put('update-company/{id}', 'updateCompany')->name('update-company');
+        $route->delete('delete-company/{id}', 'deleteCompany')->name('delete-company');
     });
