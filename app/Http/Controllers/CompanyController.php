@@ -45,7 +45,7 @@ class CompanyController extends Controller
         $company = Company::find($id);
 
         if (empty($company)) {
-            return withError('Company not found!');
+            return withError('Company not found!', 404);
         }
 
         return withSuccess(new CompanyResource($company));
@@ -59,7 +59,7 @@ class CompanyController extends Controller
         $company = Company::find($id);
 
         if (empty($company)) {
-            return withError('Company not found!');
+            return withError('Company not found!', 404);
         }
 
         $company->update($request->validated());
@@ -75,7 +75,7 @@ class CompanyController extends Controller
         $company = Company::find($id);
 
         if (empty($company)) {
-            return withError('Company not found!');
+            return withError('Company not found!', 404);
         }
 
         $company->delete();

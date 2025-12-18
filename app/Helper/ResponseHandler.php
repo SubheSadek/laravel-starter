@@ -30,6 +30,19 @@ function withError(string $message, int $status = 400, mixed $data = new stdClas
 }
 
 /**
+ * Returns a custom response with validation error status and data.
+ */
+function withValidationError(object $message = new stdClass, mixed $data = new stdClass): Response
+{
+    return response([
+        'json_data' => $data,
+        'success' => false,
+        'status' => 422,
+        'messages' => (object) $message,
+    ], 422);
+}
+
+/**
  * Returns a custom response with the given data, success status, status code, and message.
  */
 function customResponse(mixed $data, bool $success, int $status, string $message): Response
