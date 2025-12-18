@@ -7,6 +7,7 @@ use App\Models\UserOtp;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\Sanctum;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -30,6 +31,52 @@ class AuthTest extends TestCase
             ->assertJson([
                 'success' => true,
             ]);
+    }
+
+    /*
+     * Test user register validation fails.
+     */
+    #[DataProvider('invalidRegisterDataProvider')]
+    public function test_register_validation_fails(array $data): void
+    {
+        $response = $this->postJson('/api/auth/register', $data);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('success', false)
+            ->assertJsonPath('messages', fn ($value) => ! empty($value));
+    }
+
+    /**
+     * Test user register validation fails.
+     */
+    public static function invalidRegisterDataProvider(): array
+    {
+        return [
+            'missing name' => [
+                ['email' => 'test@example.com'],
+                ['password' => 'password'],
+                ['password_confirmation' => 'password'],
+                ['address' => '123 Main St'],
+            ],
+            'missing email' => [
+                ['name' => 'John Doe'],
+                ['password' => 'password'],
+                ['password_confirmation' => 'password'],
+                ['address' => '123 Main St'],
+            ],
+            'missing password' => [
+                ['name' => 'John Doe'],
+                ['email' => 'test@example.com'],
+                ['password_confirmation' => 'password'],
+                ['address' => '123 Main St'],
+            ],
+            'missing password confirmation' => [
+                ['name' => 'John Doe'],
+                ['email' => 'test@example.com'],
+                ['password' => 'password'],
+                ['address' => '123 Main St'],
+            ],
+        ];
     }
 
     /**

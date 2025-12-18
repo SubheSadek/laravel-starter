@@ -40,7 +40,7 @@ class VerifyUserRequest extends FormRequest
     public function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(
-            withError($validator->errors()->first())
+            withValidationError($validator->errors())
         );
     }
 }
