@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Enums\UserStatus;
+use App\Enums\UserStatus;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\VerifyUserRequest;
 use App\Http\Resources\AuthResource;
-use App\Http\Services\AuthService;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;

@@ -2,26 +2,29 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use App\Http\Enums\UserStatus;
+use App\Enums\UserStatus;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\VerifyUserRequest;
 use App\Mail\UserOtpMail;
 use App\Models\User;
 use App\Models\UserOtp;
+use App\Traits\FormatterTrait;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 
 class AuthService
 {
+    use FormatterTrait;
+
     /**
      * Format validated data
      */
     public function formatValidatedData(array $validatedData): array
     {
         if ($address = $validatedData['address'] ?? null) {
-            $validatedData['address'] = trim(strip_tags($address));
+            $validatedData['address'] = $this->plainTextPurifier($address);
         }
 
         $validatedData['status'] = UserStatus::PENDING;
