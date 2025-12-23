@@ -340,7 +340,7 @@ class AuthServiceTest extends TestCase
 
         return $request;
     }
-    
+
     /**
      * Helper method to create a mock LoginRequest
      */
