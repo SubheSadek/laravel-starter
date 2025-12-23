@@ -1,0 +1,75 @@
+services:
+    nginx:
+        build:
+            context: ./docker
+            dockerfile: nginx.dockerfile
+        ports:
+            - "80:80"
+        volumes:
+            - ./:/var/www/html
+
+        depends_on:
+            - php
+            - redis
+            - postgres
+
+    php:
+        build:
+            context: ./docker
+            dockerfile: php.dockerfile
+        volumes:
+            - ./:/var/www/html
+        depends_on:
+            - postgres
+            - redis
+
+    postgres:
+        image: postgres:16-alpine
+        container_name: postgres
+        restart: unless-stopped
+        ports:
+            - "5430:5432"
+        environment:
+            POSTGRES_DB: laravel
+            POSTGRES_USER: laravel
+            POSTGRES_PASSWORD: secret
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: [ "CMD-SHELL", "pg_isready -U laravel" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    composer:
+        profiles: [ "tools" ]
+        build:
+            context: ./docker
+            dockerfile: composer.dockerfile
+        volumes:
+            - ./:/var/www/html
+        working_dir: /var/www/html
+
+    redis:
+        image: redis:7-alpine
+        container_name: redis
+        volumes:
+            - redis_data:/data
+        command: redis-server --appendonly yes
+        restart: unless-stopped
+
+    artisan:
+        profiles: [ "tools" ]
+        build:
+            context: ./docker
+            dockerfile: php.dockerfile
+        volumes:
+            - ./:/var/www/html
+        working_dir: /var/www/html
+        depends_on:
+            - postgres
+        entrypoint: [ 'php', '/var/www/html/artisan' ]
+
+volumes:
+    redis_data:
+    postgres_data:

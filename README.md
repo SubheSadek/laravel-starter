@@ -95,6 +95,149 @@ npm install
 npm run build
 ```
 
+### Docker Setup
+
+This project includes a Docker configuration for easy development environment setup.
+
+#### Docker Containers
+
+The docker-compose setup includes the following services:
+
+- **nginx**: Web server (port 80)
+- **php**: PHP 8.4+ with FPM
+- **postgres**: PostgreSQL 16 (port 5430, mapped from 5432)
+- **redis**: Redis 7 for caching and queues
+- **composer**: Composer tool (profile: tools)
+- **artisan**: Laravel Artisan CLI (profile: tools)
+
+#### Prerequisites
+
+- Docker
+- Docker Compose
+
+#### Getting Started with Docker
+
+1. **Build and start containers:**
+   ```bash
+   make up
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   make composer cmd="install"
+   ```
+
+3. **Copy environment file** (if not already done):
+   ```bash
+   cp .env.example .env
+   ```
+
+4. **Generate application key:**
+   ```bash
+   docker-compose run --rm artisan key:generate
+   ```
+
+5. **Run migrations:**
+   ```bash
+   make migrate
+   ```
+
+#### Docker Configuration
+
+The default database credentials in `compose.yml`:
+```env
+POSTGRES_DB=laravel
+POSTGRES_USER=laravel
+POSTGRES_PASSWORD=secret
+```
+
+Update your `.env` file to match:
+```env
+DB_CONNECTION=pgsql
+DB_HOST=postgres
+DB_PORT=5432
+DB_DATABASE=laravel
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+#### MakeFile Commands
+
+The project includes a Makefile for common Docker operations:
+
+**Container Management:**
+```bash
+make up              # Start all containers
+make down            # Stop all containers
+make build           # Rebuild all containers (no cache)
+make build-php       # Rebuild PHP container only
+make clean           # Stop containers and remove volumes
+```
+
+**Shell Access:**
+```bash
+make bash            # Enter PHP container shell
+make composer-bash   # Enter Composer container shell
+make psql            # Enter PostgreSQL shell
+```
+
+**Development Commands:**
+```bash
+make artisan cmd="..."           # Run Artisan command
+make composer cmd="..."          # Run Composer command
+make test cmd="..."              # Run Artisan test command
+```
+
+**Database Operations:**
+```bash
+make migrate                     # Run migrations
+make migrate-fresh               # Fresh migrations
+make migrate-rollback            # Rollback last migration
+make db-seed                     # Seed database
+```
+
+**Cache Management:**
+```bash
+make cache-clear    # Clear all Laravel caches
+```
+
+**Logging:**
+```bash
+make logs                        # Tail all container logs
+make logs-container container=php  # Tail specific container logs
+```
+
+#### Examples
+
+Run migrations:
+```bash
+make migrate
+```
+
+Install a new package:
+```bash
+make composer cmd="require vendor/package"
+```
+
+Run Artisan commands:
+```bash
+make artisan cmd="db:seed"
+make artisan cmd="make:controller MyController"
+```
+
+Access PostgreSQL database:
+```bash
+make psql
+```
+
+Enter PHP container for debugging:
+```bash
+make bash
+```
+
 ## 🔧 Configuration
 
 ### Environment Variables
