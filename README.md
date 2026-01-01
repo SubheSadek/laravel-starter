@@ -274,6 +274,69 @@ QUEUE_CONNECTION=database
 SENTRY_LARAVEL_DSN=your_sentry_dsn
 ```
 
+### Changing the Application URL
+
+The `APP_URL` environment variable determines the base URL for your application. This is used for:
+- Generating links in emails and notifications
+- Asset URL generation
+- API endpoint references
+- CORS configuration
+
+#### For Local Development
+
+1. **Update your `.env` file:**
+   ```env
+   APP_URL=http://your-custom-domain.localhost
+   ```
+
+2. **If using Laravel's built-in server** (`php artisan serve`):
+   - By default, it runs on `http://localhost:8000`
+   - Set `APP_URL=http://localhost:8000` or your custom host
+
+3. **If using a custom local domain** (e.g., with Valet, Herd, or hosts file):
+   - Update `APP_URL` to match your custom domain
+   - Example: `APP_URL=http://starter-api.test`
+
+4. **Clear application cache** after changing the URL:
+   ```bash
+   php artisan config:clear
+   php artisan cache:clear
+   ```
+
+#### For Docker Environment
+
+1. **Update your `.env` file:**
+   ```env
+   APP_URL=http://starter-api.localhost
+   ```
+   > **Note**: The default Docker setup uses nginx on port 80, so no port number is needed.
+
+2. **Restart containers** to apply changes:
+   ```bash
+   make down
+   make up
+   ```
+
+3. **Clear cache inside the container:**
+   ```bash
+   make artisan cmd="config:clear"
+   make artisan cmd="cache:clear"
+   ```
+
+#### For Production
+
+1. **Set your production domain:**
+   ```env
+   APP_URL=https://api.yourdomain.com
+   ```
+   > **Important**: Always use HTTPS in production for security.
+
+2. **Clear and cache configuration** for better performance:
+   ```bash
+   php artisan config:cache
+   php artisan route:cache
+   ```
+
 ## 🚦 Running the Application
 
 ### Development Mode

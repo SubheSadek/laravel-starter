@@ -28,6 +28,10 @@ up:
 down:
 	$(DOWN)
 
+# Restart all containers
+rs:
+	$(DOWN) && $(UP)
+
 # Rebuild all containers
 build:
 	$(BUILD)
@@ -35,6 +39,10 @@ build:
 # Rebuild PHP container only
 build-php:
 	$(DC) build --no-cache $(PHP_CONTAINER)
+
+# Nginx Restart
+nginx-restart:
+	docker-compose restart $(NGINX_CONTAINER)
 
 # Enter PHP container shell
 bash:
